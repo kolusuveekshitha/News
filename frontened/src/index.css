@@ -28,7 +28,7 @@ header ul ul li {
 
 /* Buttons */
 button {
-  @apply transition-colors duration-200;
+  @apply transition-colors duration-200 cursor-pointer;
 }
 
 /* Cards */

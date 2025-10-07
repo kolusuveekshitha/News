@@ -1,11 +1,14 @@
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import React from "react";
+import { useNavigate } from "react-router-dom";
 import countries from "./countries";
 
 function Header() {
-  const [theme, setTheme] = useState("light-theme");
-  const [showCategory, setShowCategory] = useState(false);
-  const [showCountry, setShowCountry] = useState(false);
+  const navigate = useNavigate();
+
+  // Theme state
+  const [theme, setTheme] = React.useState("light-theme");
+  const [showCategory, setShowCategory] = React.useState(false);
+  const [showCountry, setShowCountry] = React.useState(false);
 
   const categories = [
     "business",
@@ -18,9 +21,16 @@ function Header() {
     "politics",
   ];
 
-  useEffect(() => {
+  // Toggle dark/light theme
+  React.useEffect(() => {
     document.body.className = theme;
   }, [theme]);
+
+  // Logout function
+  const handleLogout = () => {
+    localStorage.removeItem("userInfo"); // clear login info
+    navigate("/login"); // redirect to login page
+  };
 
   return (
     <header className="fixed w-full top-0 z-50 bg-white dark:bg-gray-800 shadow-md">
@@ -28,12 +38,17 @@ function Header() {
         <h1 className="logo-newspaper">News Aggregator</h1>
 
         <ul className="flex items-center gap-6 font-medium">
+          {/* All News */}
           <li>
-            <Link to="/" className="hover:text-red-600">
+            <button
+              onClick={() => navigate("/")}
+              className="hover:text-red-600"
+            >
               All News
-            </Link>
+            </button>
           </li>
 
+          {/* Top Headlines Dropdown */}
           <li className="relative">
             <button
               onClick={() => {
@@ -51,18 +66,21 @@ function Header() {
                     key={c}
                     className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700"
                   >
-                    <Link
-                      to={`/top-headlines/${c}`}
-                      onClick={() => setShowCategory(false)}
+                    <button
+                      onClick={() => {
+                        navigate(`/top-headlines/${c}`);
+                        setShowCategory(false);
+                      }}
                     >
                       {c}
-                    </Link>
+                    </button>
                   </li>
                 ))}
               </ul>
             )}
           </li>
 
+          {/* Country Dropdown */}
           <li className="relative">
             <button
               onClick={() => {
@@ -80,9 +98,11 @@ function Header() {
                     key={c.iso_2_alpha}
                     className="px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2"
                   >
-                    <Link
-                      to={`/country/${c.iso_2_alpha}`}
-                      onClick={() => setShowCountry(false)}
+                    <button
+                      onClick={() => {
+                        navigate(`/country/${c.iso_2_alpha}`);
+                        setShowCountry(false);
+                      }}
                       className="flex items-center gap-2"
                     >
                       <img
@@ -91,13 +111,14 @@ function Header() {
                         className="w-5 h-4"
                       />
                       {c.countryName}
-                    </Link>
+                    </button>
                   </li>
                 ))}
               </ul>
             )}
           </li>
 
+          {/* Theme Toggle */}
           <li>
             <button
               onClick={() =>
@@ -105,6 +126,16 @@ function Header() {
               }
             >
               {theme === "light-theme" ? "🌙" : "☀️"}
+            </button>
+          </li>
+
+          {/* Logout Button */}
+          <li>
+            <button
+              onClick={handleLogout}
+              className="bg-red-600 text-white py-1 px-3 rounded hover:bg-red-700"
+            >
+              Logout
             </button>
           </li>
         </ul>
